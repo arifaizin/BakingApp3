@@ -54,11 +54,11 @@ public class DetailRecipeDetailFragment extends Fragment {
     private DummyContent.DummyItem mItem;
     private ArrayList<RecipeModel> recipeList;
     private int posisiResep, posisiStep;
-    
+
     private SimpleExoPlayerView playerView;
     private SimpleExoPlayer player;
 
-    private boolean playWhenReady= true;
+    private boolean playWhenReady = true;
     private int currentWindow;
     private long playbackPosition;
 
@@ -95,16 +95,12 @@ public class DetailRecipeDetailFragment extends Fragment {
             posisiStep = getArguments().getInt(POSISISTEP);
             videoURL = recipeList.get(posisiResep).getSteps().get(posisiStep).getVideoURL();
             description = recipeList.get(posisiResep).getSteps().get(posisiStep).getDescription();
-            Log.d(TAG, "VideoURL : "+videoURL );
-
-            if (videoURL == null) {
-                playerView.setVisibility(View.GONE);
-            }
+            Log.d(TAG, "VideoURL : " + videoURL);
 
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle("Step "+posisiStep);
+                appBarLayout.setTitle("Step " + posisiStep);
             }
 
 //            if (getArguments() != null && getArguments().containsKey(VIDEO_URL) && getArguments().containsKey(DESCRIPTION)){
@@ -131,7 +127,9 @@ public class DetailRecipeDetailFragment extends Fragment {
     }
 
     private void initializePlayer() {
-        if (videoURL == null) return;
+        if (videoURL.isEmpty()) {
+            playerView.setVisibility(View.GONE);
+        }
 
 //        TrackSelection.Factory adaptiveTrackSelectionFactory =
 //                new AdaptiveTrackSelection.Factory(3000);

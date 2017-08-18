@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import static id.co.imastudio.bakingapp3.MainActivity.POSISIRESEP;
@@ -56,24 +58,22 @@ public class BakingAdapter extends RecyclerView.Adapter<BakingAdapter.ViewHolder
         holder.bakingName.setText(recipeList.get(position).getName());
         holder.bakingServing.setText("Servings : "+recipeList.get(position).getServings().toString());
 
+        if (recipeList.get(position).getImage().isEmpty()) {
+            Picasso.with(context).load(R.drawable.baking).into(holder.bakingImage);
+        } else {
+            Picasso.with(context).load(recipeList.get(position).getImage()).into(holder.bakingImage);
+        }
+
 
         holder.bakingImage.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-//                Toast.makeText(context, "Judul Film : " + recipeList.get(position).getJudulFilm(), Toast.LENGTH_SHORT).show();
                 Intent pindah = new Intent(context, DetailRecipeListActivity.class);
                 pindah.putParcelableArrayListExtra(SELECTED_RECIPE, recipeList);
                 pindah.putExtra(POSISIRESEP, position);
-//                pindah.putExtra("ID_JUDUL", recipeList.get(position).getIdFilm());
-//                pindah.putExtra("DATA_JUDUL", recipeList.get(position).getJudulFilm());
-//                pindah.putExtra("DATA_GAMBAR", recipeList.get(position).getGambarFilm());
-//                pindah.putExtra("DATA_POSTER", recipeList.get(position).getPosterFilm());
-//                pindah.putExtra("DATA_SINOPSIS", recipeList.get(position).getSinopsisFilm());
-//                pindah.putExtra("DATA_RATING", recipeList.get(position).getRatingFilm());
-//                pindah.putExtra("DATA_RELEASE", recipeList.get(position).getReleaseFilm());
-//                pindah.putExtra(BakingModel.TAG_MOVIES, movies);
                 context.startActivity(pindah);
+
             }
         });
 

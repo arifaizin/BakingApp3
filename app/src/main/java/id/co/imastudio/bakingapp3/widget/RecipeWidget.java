@@ -18,16 +18,21 @@ import id.co.imastudio.bakingapp3.MockData;
 import id.co.imastudio.bakingapp3.R;
 import id.co.imastudio.bakingapp3.RecipeModel;
 
+import static id.co.imastudio.bakingapp3.MainActivity.POSISIRESEP;
 import static id.co.imastudio.bakingapp3.MainActivity.SELECTED_RECIPE;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class RecipeWidget extends AppWidgetProvider {
-
+    int posisiResep;
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
+        if (intent != null) {
+            posisiResep = intent.getExtras().getInt(POSISIRESEP, 0);
+            Log.d("RecipeWidget", "posisi widget: " + posisiResep);
+        }
     }
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
@@ -66,12 +71,13 @@ public class RecipeWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, RecipeService.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
 
+
         Type type = new TypeToken<List<RecipeModel>>(){}.getType();
         List<RecipeModel> recipes = new GsonBuilder().create().fromJson(MockData.DATA_1, type);
-        Log.d("RecipeWidget", "initViews: "+ recipes.get(0).getName());
+        Log.d("RecipeWidget", "initViews: "+ recipes.get(posisiResep).getName());
+//        Log.d("RecipeWidget", "initViews: posisi widget: " + posisiResep);
 
-
-        RecipeModel recipe = recipes.get(0);
+        RecipeModel recipe = recipes.get(posisiResep);
         String sRecipe = new GsonBuilder().create().toJson(recipe);
 
         intent.putExtra(SELECTED_RECIPE, sRecipe);

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,8 @@ import static id.co.imastudio.bakingapp3.MainActivity.ALL_RECIPES;
 public class BakingFragment extends Fragment {
 
 
+    private static final String SAVED_LAYOUT_MANAGER = "slm";
+    private static final String TAG = "BakingFragment";
 
     public BakingFragment() {
         // Required empty public constructor
@@ -43,7 +47,12 @@ public class BakingFragment extends Fragment {
     private ArrayList<RecipeModel> bakingList;
     private RecyclerView recyclerView;
     private BakingAdapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,11 +79,11 @@ public class BakingFragment extends Fragment {
 //            Log.d("bakinglist",""+bakingList.get(0).getName());
 //        }
 
-//        if (isNetworkConnected()) {
+        if (isNetworkConnected()) {
             getDataWithRetrofit();
-//        } else {
-//            Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-//        }
+        } else {
+            Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+        }
 
 
 
@@ -124,10 +133,30 @@ public class BakingFragment extends Fragment {
             @Override
             public void onFailure(Call<ArrayList<RecipeModel>> call, Throwable t) {
                 Log.v("http fail: ", t.getMessage());
+                Toast.makeText(getActivity(), "http fail: "+ t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_LAYOUT_MANAGER, recyclerView.getLayoutManager().onSaveInstanceState());
+        Log.d(TAG, "onSaveInstanceState: "+recyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.d(TAG, "onViewStateRestored: called");
+        if(savedInstanceState != null) {
+//            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(SAVED_LAYOUT_MANAGER);
+//            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+            Log.d(TAG, "onViewStateRestored() returned: " + savedInstanceState.getParcelable(SAVED_LAYOUT_MANAGER));
+
+        }
+    }
 
     private boolean isNetworkConnected() {
         ConnectivityManager connMgr = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);

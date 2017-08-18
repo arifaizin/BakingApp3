@@ -8,6 +8,7 @@
         android:id="@+id/id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="1"
         android:layout_margin="@dimen/text_margin"
         android:textAppearance="?attr/textAppearanceListItem" />
 
@@ -15,6 +16,15 @@
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="content"
         android:layout_margin="@dimen/text_margin"
         android:textAppearance="?attr/textAppearanceListItem" />
+
+    <ImageView
+        android:id="@+id/thumbnail_url"
+        android:layout_width="40dp"
+        android:layout_height="20dp"
+        android:layout_margin="@dimen/text_margin"
+        android:visibility="gone" />
+
 </LinearLayout>

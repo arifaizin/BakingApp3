@@ -1,5 +1,7 @@
 package id.co.imastudio.bakingapp3;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,12 +19,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import id.co.imastudio.bakingapp3.dummy.DummyContent;
+import id.co.imastudio.bakingapp3.widget.RecipeWidget;
 
 import static id.co.imastudio.bakingapp3.MainActivity.POSISIRESEP;
 import static id.co.imastudio.bakingapp3.MainActivity.POSISISTEP;
@@ -38,6 +44,7 @@ import static id.co.imastudio.bakingapp3.MainActivity.SELECTED_RECIPE;
  */
 public class DetailRecipeListActivity extends AppCompatActivity {
 
+    private static final String SAVED_LAYOUT_MANAGER = "slm";
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -80,7 +87,16 @@ public class DetailRecipeListActivity extends AppCompatActivity {
         }
         Log.d("Hasil", ""+recipeList+posisiResep);
 
+        ////
+        Intent intent = new Intent(this, RecipeWidget.class);
+//        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), RecipeWidget.class));
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+        intent.putExtra(POSISIRESEP,posisiResep);
+        sendBroadcast(intent);
 
+        ////
         List<Ingredient> ingredients = recipeList.get(posisiResep).getIngredients();
         RecyclerView rvIngredients = (RecyclerView) findViewById(R.id.detailrecipe_ingredient);
         IngredientAdapter ingredientsAdapterView = new IngredientAdapter(ingredients, DetailRecipeListActivity.this);
@@ -143,6 +159,16 @@ public class DetailRecipeListActivity extends AppCompatActivity {
             holder.mItem = mValues.get(position);
             holder.mIdView.setText(mValues.get(position).id);
             holder.mContentView.setText(recipeList.get(posisiResep).getSteps().get(position).getShortDescription());
+            if (recipeList.get(posisiResep).getSteps().get(position).getThumbnailURL().isEmpty()){
+                holder.thubmnailView.setVisibility(View.GONE);
+            } else {
+                holder.thubmnailView.setVisibility(View.VISIBLE);
+                Picasso.with(DetailRecipeListActivity.this)
+                        .load(recipeList.get(posisiResep).getSteps().get(position).getThumbnailURL())
+                        .into(holder.thubmnailView);
+            }
+
+            Log.d(TAG, "onBindViewHolder: "+ recipeList.get(posisiResep).getSteps().get(position).getThumbnailURL());
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -181,6 +207,7 @@ public class DetailRecipeListActivity extends AppCompatActivity {
             public final View mView;
             public final TextView mIdView;
             public final TextView mContentView;
+            public final ImageView thubmnailView;
             public DummyContent.DummyItem mItem;
 
             public ViewHolder(View view) {
@@ -188,6 +215,8 @@ public class DetailRecipeListActivity extends AppCompatActivity {
                 mView = view;
                 mIdView = (TextView) view.findViewById(R.id.id);
                 mContentView = (TextView) view.findViewById(R.id.content);
+                thubmnailView = (ImageView) view.findViewById(R.id.thumbnail_url);
+
             }
 
             @Override
@@ -204,5 +233,6 @@ public class DetailRecipeListActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(SELECTED_RECIPE, recipeList);
         outState.putInt(POSISIRESEP, posisiResep);
+//        outState.putParcelable(SAVED_LAYOUT_MANAGER, recy.getLayoutManager().onSaveInstanceState());
     }
 }
