@@ -6,16 +6,10 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.google.gson.GsonBuilder;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import id.co.imastudio.bakingapp3.Ingredient;
-import id.co.imastudio.bakingapp3.R;
-import id.co.imastudio.bakingapp3.RecipeModel;
+import static id.co.imastudio.bakingapp3.widget.RecipeWidget.ingredientforwidget;
 
-import static id.co.imastudio.bakingapp3.MainActivity.SELECTED_RECIPE;
 
 /**
  * Created by idn on 8/17/2017.
@@ -23,24 +17,17 @@ import static id.co.imastudio.bakingapp3.MainActivity.SELECTED_RECIPE;
 
 public class RecipeDataProvider implements RemoteViewsService.RemoteViewsFactory {
     private static final String TAG = "RecipeDataProvider";
-    List<Ingredient> ingredientList = new ArrayList<>();
+//    List<Ingredient> ingredientList = new ArrayList<>();
     Context context;
     Intent intent;
-    int posisiResep;
+
+    List<String> remoteViewingredientsList;
 
     void initData(){
 //        String sRecipe = intent.getStringExtra(SELECTED_RECIPE);
-//        Recipe recipe = new GsonBuilder().create().fromJson(sRecipe, Recipe.class);
+//        RecipeModel recipe = new GsonBuilder().create().fromJson(sRecipe, RecipeModel.class);
 //        ingredientList.addAll(recipe.getIngredients());
-
-//        recipeList = intent.getParcelableArrayListExtra(SELECTED_RECIPE);
-//        posisiResep = intent.getIntExtra(POSISIRESEP, 0);
-        
-
-        String sRecipe = intent.getStringExtra(SELECTED_RECIPE);
-        RecipeModel recipe = new GsonBuilder().create().fromJson(sRecipe, RecipeModel.class);
-        ingredientList.addAll(recipe.getIngredients());
-        Log.d(TAG, "initData: "+ingredientList);
+//        Log.d(TAG, "initData: "+ingredientList);
     }
 
     public RecipeDataProvider(Context context, Intent intent) {
@@ -56,7 +43,17 @@ public class RecipeDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public void onDataSetChanged() {
-
+//        onCreate();
+//        Log.d(TAG, "onDataSetChanged: called");
+//        String sRecipe = intent.getStringExtra(SELECTED_RECIPE);
+//
+//        RecipeModel recipe = new GsonBuilder().create().fromJson(sRecipe, RecipeModel.class);
+//        ingredientList.addAll(recipe.getIngredients());
+//        Log.d(TAG, "initData: "+ingredientList);
+//        for (int i = 0; i < recipe.getIngredients().size(); i++) {
+//            Log.d(TAG, "initData: "+recipe.getIngredients().get(i).getIngredient());
+//        }
+        remoteViewingredientsList = ingredientforwidget;
     }
 
     @Override
@@ -66,16 +63,18 @@ public class RecipeDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public int getCount() {
-        return ingredientList.size();
+//        return ingredientList.size();
+        return remoteViewingredientsList.size();
     }
 
     @Override
     public RemoteViews getViewAt(int position) {
-        Ingredient ingredient = ingredientList.get(position);
+//        Ingredient ingredient = ingredientforwidget.get(position);
         RemoteViews views = new RemoteViews(context.getPackageName(), android.R.layout.simple_list_item_1);
-        views.setTextViewText(android.R.id.text1, String.format(context.getString(R.string.ingredients_detail)
-                , ingredient.getQuantity(), ingredient.getMeasure(), ingredient.getIngredient()));
-        Log.d(TAG, "getViewAt: "+ingredient.getMeasure());
+//        views.setTextViewText(android.R.id.text1, String.format(context.getString(R.string.ingredients_detail)
+//                , ingredient.getQuantity(), ingredient.getMeasure(), ingredient.getIngredient()));
+        views.setTextViewText(android.R.id.text1, remoteViewingredientsList.get(position));
+        Log.d(TAG, "getViewAt: "+position+ingredientforwidget);
         return views;    }
 
     @Override
@@ -90,7 +89,7 @@ public class RecipeDataProvider implements RemoteViewsService.RemoteViewsFactory
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override

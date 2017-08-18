@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -82,7 +83,15 @@ public class BakingFragment extends Fragment {
         if (isNetworkConnected()) {
             getDataWithRetrofit();
         } else {
-            Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+            Snackbar.make(fragmentView, "No Internet Connection", Toast.LENGTH_SHORT)
+                    .setActionTextColor(getResources().getColor(R.color.colorPrimary))
+                    .setAction("Try Again", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getDataWithRetrofit();
+                }
+            }).show();
+
         }
 
 
@@ -153,7 +162,7 @@ public class BakingFragment extends Fragment {
         if(savedInstanceState != null) {
 //            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(SAVED_LAYOUT_MANAGER);
 //            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-            Log.d(TAG, "onViewStateRestored() returned: " + savedInstanceState.getParcelable(SAVED_LAYOUT_MANAGER));
+//            Log.d(TAG, "onViewStateRestored() returned: " + savedInstanceState.getParcelable(SAVED_LAYOUT_MANAGER));
 
         }
     }

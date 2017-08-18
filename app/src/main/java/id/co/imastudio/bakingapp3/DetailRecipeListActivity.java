@@ -1,7 +1,5 @@
 package id.co.imastudio.bakingapp3;
 
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -28,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import id.co.imastudio.bakingapp3.dummy.DummyContent;
-import id.co.imastudio.bakingapp3.widget.RecipeWidget;
+import id.co.imastudio.bakingapp3.widget.UpdateBakingService;
 
 import static id.co.imastudio.bakingapp3.MainActivity.POSISIRESEP;
 import static id.co.imastudio.bakingapp3.MainActivity.POSISISTEP;
@@ -87,14 +85,6 @@ public class DetailRecipeListActivity extends AppCompatActivity {
         }
         Log.d("Hasil", ""+recipeList+posisiResep);
 
-        ////
-        Intent intent = new Intent(this, RecipeWidget.class);
-//        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
-        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        int ids[] = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), RecipeWidget.class));
-        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
-        intent.putExtra(POSISIRESEP,posisiResep);
-        sendBroadcast(intent);
 
         ////
         List<Ingredient> ingredients = recipeList.get(posisiResep).getIngredients();
@@ -102,6 +92,34 @@ public class DetailRecipeListActivity extends AppCompatActivity {
         IngredientAdapter ingredientsAdapterView = new IngredientAdapter(ingredients, DetailRecipeListActivity.this);
         rvIngredients.setAdapter(ingredientsAdapterView);
         rvIngredients.setLayoutManager(new LinearLayoutManager(this));
+
+        ////
+        ArrayList<String> recipeIngredientsForWidgets= new ArrayList<>();
+        for (int i = 0; i < ingredients.size(); i++) {
+            recipeIngredientsForWidgets.add(ingredients.get(i).getQuantity().toString()+" "+
+                    ingredients.get(i).getMeasure()+" of "+ ingredients.get(i).getIngredient());
+        }
+        ////
+//        Intent intent = new Intent(this, RecipeWidget.class);
+////        intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+//        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+//        AppWidgetManager widgetManager = AppWidgetManager.getInstance(this);
+//        int appWidgetIds[] = widgetManager.getAppWidgetIds(new ComponentName(this, RecipeWidget.class));
+//        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,appWidgetIds);
+//        intent.putExtra(POSISIRESEP,posisiResep);
+//        intent.putExtra(SELECTED_INGREDIENT, recipeIngredientsForWidgets);
+//        startService(intent);
+
+//        RecipeWidget.updateBakingWidgets(this, widgetManager, appWidgetIds, posisiResep);
+//        sendBroadcast(intent);
+        //
+        UpdateBakingService.startBakingService(this,recipeIngredientsForWidgets);
+
+//        Intent intentUpdateWidget = new Intent("android.appwidget.action.APPWIDGET_UPDATE2");
+//        intentUpdateWidget.setAction("android.appwidget.action.APPWIDGET_UPDATE2");
+//        intentUpdateWidget.putExtra(POSISIRESEP,posisiResep);
+//        sendBroadcast(intentUpdateWidget);
+
 
         View recyclerView = findViewById(R.id.detailrecipe_list);
         assert recyclerView != null;
@@ -167,8 +185,6 @@ public class DetailRecipeListActivity extends AppCompatActivity {
                         .load(recipeList.get(posisiResep).getSteps().get(position).getThumbnailURL())
                         .into(holder.thubmnailView);
             }
-
-            Log.d(TAG, "onBindViewHolder: "+ recipeList.get(posisiResep).getSteps().get(position).getThumbnailURL());
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override

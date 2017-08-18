@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String SELECTED_RECIPE = "SelectedRecipes";
     public static final String POSISIRESEP = "PosisiResep";
     public static final String POSISISTEP = "PosisiStep";
+    public static final String SELECTED_INGREDIENT = "SelectedIngredient";
 
 
     // For Unit Testing
