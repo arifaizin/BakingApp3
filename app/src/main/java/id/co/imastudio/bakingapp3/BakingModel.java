@@ -107,7 +107,7 @@ public class BakingModel {
             this.ingredient = ingredient;
         }
     }
-
+//selesAIIIIIIII   ditunggu bajunya :*
     public static class StepsList {
         /**
          * id : 0
