@@ -43,7 +43,7 @@ public class BakingAdapter extends RecyclerView.Adapter<BakingAdapter.ViewHolder
 
         }
     }
-
+//mantab jiwaaaaaa
     @Override
     public BakingAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
