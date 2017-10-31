@@ -36,7 +36,7 @@ import static id.co.imastudio.bakingapp3.MainActivity.ALL_RECIPES;
  */
 public class BakingFragment extends Fragment {
 
-
+//turunkan harga bajuuuuuuu
     private static final String SAVED_LAYOUT_MANAGER = "slm";
     private static final String TAG = "BakingFragment";
 
